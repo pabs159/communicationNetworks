@@ -38,7 +38,6 @@ class TCP():
 
 	def connectToServer(self):
 		self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
 		self.client.connect((self.ipaddr, self.port))
 		self.client.send(self.HELO.encode())
 		self.client.settimeout(self.socketTimeout)
@@ -53,6 +52,11 @@ class TCP():
 				break
 			else:
 				continue
+
+		# If the screen name is taken then notify and exit
+		if self.TCPmsg.startswith("RJCT"):
+			print("Username: " + self.screenName + " already exist!")
+			exit(-1)
 
 		self.TCPmsg = self.TCPmsg[5:]
 		pattern = re.compile("(\w+)\s(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})\s(\d{1,5})")
@@ -77,8 +81,7 @@ class TCP():
 		# Clean up
 		self.client.close()
 
-	def __exit__(self):
-		print("exit")
+
 
 
 class UDP:
