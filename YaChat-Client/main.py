@@ -116,6 +116,8 @@ class UDP:
 
 	def deleteUser(self, deleteMsg):
 		userToDelete = re.findall(self.exitPattern, deleteMsg)
+		if len(userToDelete) < 1:
+			return -1
 		userToDelete = userToDelete[0]
 		if (userToDelete == self.screenName):
 			print(userToDelete + " has left the chat")
@@ -151,6 +153,7 @@ class UDP:
 					self.addUser(dataStr)
 				elif dataStr.startswith("EXIT"):
 					self.deleteUser(dataStr)
+
 		except OSError:
 			pass
 		except Exception as e:
@@ -161,6 +164,8 @@ class UDP:
 		while True:
 			try:
 				console = input()
+				if console.startswith("EXIT"):
+					break
 				self.sendMsg(console)
 				self.UDPClient.sendto(console.encode(), self.addressAndPort)
 			except EOFError:
